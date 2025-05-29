@@ -1,12 +1,11 @@
 # app/services/firestore/user.py - Firestore 使用者操作模組
 
-from google.cloud import firestore
-from datetime import datetime, timezone
 import uuid
+from datetime import datetime, timezone
+from app.core.firestore_client import db
 from app.schemas.user import UserSchema
 
-# 初始化 Firestore 客戶端（僅初始化一次）
-db = firestore.Client()
+# 指定 users collection
 users_collection = db.collection("users")
 
 
