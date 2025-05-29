@@ -15,7 +15,7 @@ curl -sSL https://install.python-poetry.org | python
 ### 初始化專案
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/ayililili/digital-shop-backend.git
 cd digital-shop-backend
 poetry install
 cp .env.example .env  # 編輯環境變數
@@ -54,6 +54,8 @@ poetry run uvicorn app.main:app --reload
 - [x] Google 登入驗證流程
 - [x] Firebase 驗證與 Firestore 使用者建立
 - [x] JWT 簽發與驗證
+- [ ] Refresh Token 產生與 Access Token 換發機制
+- [ ] 使用 Redis 儲存 Refresh Token（含 TTL）
 - [ ] 商品管理 API
 - [ ] Stripe Checkout 整合
 - [ ] Stripe Webhook 處理訂單
