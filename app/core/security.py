@@ -2,21 +2,37 @@
 
 import jwt
 from datetime import datetime, timedelta, timezone
-from app.schemas.user import UserSchema
+from app.schemas.user import UserResponse
 from app.core.config import settings
 
 
-def create_jwt_token(user: UserSchema) -> str:
+def create_jwt_token(user: UserResponse) -> str:
     """
-    根據使用者資訊簽發 JWT，預設有效時間 60 分鐘。
-    僅接受 UserSchema 類型。
+    根據使用者資訊簽發 access token（預設 60 分鐘有效）。
+    僅接受 UserResponse 類型。
     """
-
     payload = {
         "sub": user.id,
         "email": user.email,
         "name": user.name,
-        "exp": datetime.now(timezone.utc) + timedelta(minutes=settings.JWT_EXP_MINUTES),
+        "type": "access",
+        "exp": datetime.now(timezone.utc)
+        + timedelta(minutes=settings.JWT_ACCESS_EXP_MINUTES),
+    }
+
+    return jwt.encode(payload, settings.JWT_SECRET, algorithm="HS256")
+
+
+def create_refresh_token(user: UserResponse) -> str:
+    """
+    簽發 refresh token（預設 30 天有效）。
+    僅接受 UserResponse 類型。
+    """
+    payload = {
+        "sub": user.id,
+        "type": "refresh",
+        "exp": datetime.now(timezone.utc)
+        + timedelta(days=settings.JWT_REFRESH_EXP_DAYS),
     }
 
     return jwt.encode(payload, settings.JWT_SECRET, algorithm="HS256")
