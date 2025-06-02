@@ -1,42 +1,58 @@
 # app/services/firestore/user.py - Firestore 使用者操作模組
 
-import uuid
 from datetime import datetime, timezone
-from typing import Dict
-
 from app.core.firestore_client import get_firestore_client
-from app.schemas.user import UserResponse
+from app.schemas.user import UserSchema
+from app.schemas.auth import FirebaseDecodedToken
+from app.core.errors import NotFoundError
 
 
-def get_or_create_user_by_firebase_uid(decoded: Dict) -> UserResponse:
+def get_user(uid: str) -> UserSchema:
     """
-    根據 Firebase UID 獲取或創建使用者資料。
-    如果使用者已存在，則更新最後登入時間；如果不存在，則創建新使用者。
-    使用 internal UUID 作為 user.id，Firebase UID 作為外部綁定識別。
+    根據 UID 取得使用者資料。
+    若不存在則拋出 NotFoundError。
+    """
+    db = get_firestore_client()
+    users_collection = db.collection("users")
+    doc_ref = users_collection.document(uid)
+    doc = doc_ref.get()
+
+    if not doc.exists:
+        raise NotFoundError(f"使用者 {uid} 不存在")
+
+    user_data = doc.to_dict()
+    user_data["id"] = uid
+    return UserSchema(**user_data)
+
+
+def get_or_create_user(decoded: FirebaseDecodedToken) -> UserSchema:
+    """
+    根據 Firebase 解碼的使用者資訊取得或建立使用者。
+    若使用者存在則更新 last_login，否則建立新使用者。
     """
     db = get_firestore_client()
     users_collection = db.collection("users")
 
-    firebase_uid = decoded["uid"]
-    doc_ref = users_collection.document(firebase_uid)
+    uid = decoded.uid
+    doc_ref = users_collection.document(uid)
     doc = doc_ref.get()
 
     now = datetime.now(timezone.utc)
 
     if doc.exists:
         user_data = doc.to_dict()
+        user_data["id"] = uid
         user_data["last_login"] = now
         doc_ref.update({"last_login": now})
     else:
         user_data = {
-            "id": str(uuid.uuid4()),  # internal UUID
-            "firebase_uid": firebase_uid,
-            "email": decoded.get("email", ""),
-            "name": decoded.get("name", ""),
-            "picture": decoded.get("picture", ""),
+            "id": uid,
+            "email": decoded.email or "",
+            "name": decoded.name or "",
+            "picture": decoded.picture or "",
             "created_at": now,
             "last_login": now,
         }
         doc_ref.set(user_data)
 
-    return UserResponse(**user_data)
+    return UserSchema(**user_data)
