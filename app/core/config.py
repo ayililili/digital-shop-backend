@@ -8,8 +8,8 @@ load_dotenv()
 
 class Settings:
     JWT_SECRET: str = os.getenv("JWT_SECRET", "")
-    JWT_ACCESS_EXP_MINUTES: int = 60
-    JWT_REFRESH_EXP_DAYS: int = 30
+    JWT_ACCESS_EXP_MINUTES: int = 15
+    JWT_REFRESH_EXP_DAYS: int = 7
     FIREBASE_CREDENTIALS: str = os.getenv("FIREBASE_CREDENTIALS", "")
 
 

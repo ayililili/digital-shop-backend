@@ -8,7 +8,7 @@ from app.core.config import settings
 
 def create_jwt_token(user: UserSchema) -> str:
     """
-    根據使用者資訊簽發 access token（預設 60 分鐘有效）。
+    根據使用者資訊簽發 access token（預設 15 分鐘有效）。
     """
     payload = {
         "sub": user.id,
@@ -24,7 +24,7 @@ def create_jwt_token(user: UserSchema) -> str:
 
 def create_refresh_token(user: UserSchema) -> str:
     """
-    根據使用者資訊簽發 refresh token（預設 30 天有效）。
+    根據使用者資訊簽發 refresh token（預設 7 天有效）。
     """
     payload = {
         "sub": user.id,
