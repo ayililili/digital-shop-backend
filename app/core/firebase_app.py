@@ -2,7 +2,10 @@
 
 from firebase_admin import credentials, initialize_app
 from app.core.config import settings
-from app.core.errors import FirebaseCredentialNotSet
+from app.core.errors import (
+    FirebaseCredentialFileNotFound,
+    FirebaseCredentialNotSet,
+)
 
 _app = None  # 單例實例
 
@@ -19,6 +22,10 @@ def get_firebase_app():
     if not settings.FIREBASE_CREDENTIALS:
         raise FirebaseCredentialNotSet()
 
-    cred = credentials.Certificate(settings.FIREBASE_CREDENTIALS)
+    try:
+        cred = credentials.Certificate(settings.FIREBASE_CREDENTIALS)
+    except FileNotFoundError:
+        raise FirebaseCredentialFileNotFound(settings.FIREBASE_CREDENTIALS)
+
     _app = initialize_app(cred)
     return _app

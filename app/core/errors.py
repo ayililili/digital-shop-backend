@@ -44,6 +44,11 @@ class FirebaseCredentialNotSet(ConfigError):
         super().__init__(message="FIREBASE_CREDENTIALS 環境變數未設定")
 
 
+class FirebaseCredentialFileNotFound(ConfigError):
+    def __init__(self, path: str):
+        super().__init__(message=f"Firebase 憑證檔案不存在: {path}")
+
+
 class GCSCredentialNotSet(ConfigError):
     def __init__(self):
         super().__init__(message="GCS_CREDENTIALS 環境變數未設定")

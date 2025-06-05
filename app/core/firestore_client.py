@@ -3,7 +3,10 @@
 from google.cloud import firestore
 from google.oauth2 import service_account
 from app.core.config import settings
-from app.core.errors import FirebaseCredentialNotSet
+from app.core.errors import (
+    FirebaseCredentialFileNotFound,
+    FirebaseCredentialNotSet,
+)
 
 _db = None  # 單例實例
 
@@ -20,8 +23,12 @@ def get_firestore_client():
     if not settings.FIREBASE_CREDENTIALS:
         raise FirebaseCredentialNotSet()
 
-    credentials = service_account.Credentials.from_service_account_file(
-        settings.FIREBASE_CREDENTIALS
-    )
+    try:
+        credentials = service_account.Credentials.from_service_account_file(
+            settings.FIREBASE_CREDENTIALS
+        )
+    except FileNotFoundError:
+        raise FirebaseCredentialFileNotFound(settings.FIREBASE_CREDENTIALS)
+
     _db = firestore.Client(credentials=credentials)
     return _db
