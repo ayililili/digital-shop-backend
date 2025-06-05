@@ -1,4 +1,4 @@
-# app/services/firebase_app.py - 初始化 Firebase App
+# app/core/firebase_app.py - 初始化 Firebase App
 
 from firebase_admin import credentials, initialize_app
 from app.core.config import settings
