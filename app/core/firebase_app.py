@@ -2,10 +2,8 @@
 
 from firebase_admin import credentials, initialize_app
 from app.core.config import settings
-from app.core.errors import (
-    FirebaseCredentialFileNotFound,
-    FirebaseCredentialNotSet,
-)
+from app.core.errors import FirebaseCredentialFileNotFound, FirebaseCredentialNotSet
+
 
 _app = None  # 單例實例
 

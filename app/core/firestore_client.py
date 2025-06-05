@@ -3,10 +3,7 @@
 from google.cloud import firestore
 from google.oauth2 import service_account
 from app.core.config import settings
-from app.core.errors import (
-    FirebaseCredentialFileNotFound,
-    FirebaseCredentialNotSet,
-)
+from app.core.errors import FirebaseCredentialFileNotFound, FirebaseCredentialNotSet
 
 _db = None  # 單例實例
 
