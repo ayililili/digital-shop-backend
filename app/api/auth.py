@@ -38,7 +38,7 @@ def google_login(data: LoginRequest):
         key="refresh_token",
         value=refresh_token,
         httponly=True,
-        secure=True,  # 僅在 HTTPS 上傳輸
+        secure=settings.is_prod,
         samesite="strict",
         path="/auth/refresh-token",
         max_age=60 * 60 * 24 * settings.JWT_REFRESH_EXP_DAYS,  # 單位秒
@@ -77,7 +77,7 @@ def refresh_token(refresh_token: str = Cookie(None)):
             key="refresh_token",
             value=new_refresh_token,
             httponly=True,
-            secure=True,  # 僅在 HTTPS 上傳輸
+            secure=settings.is_prod,
             samesite="strict",
             path="/auth/refresh-token",
             max_age=60 * 60 * 24 * settings.JWT_REFRESH_EXP_DAYS,  # 單位秒

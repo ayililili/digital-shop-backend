@@ -12,7 +12,6 @@ def verify_id_token(id_token: str) -> FirebaseDecodedToken:
     發生錯誤時統一轉為 AuthError。
     """
     try:
-        # 確保 Firebase App 已初始化（只會執行一次）
         get_firebase_app()
         decoded_raw = auth.verify_id_token(id_token)
         return FirebaseDecodedToken(**decoded_raw)
