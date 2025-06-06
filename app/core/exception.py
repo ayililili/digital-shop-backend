@@ -16,7 +16,7 @@ def register_exception_handlers(app: FastAPI):
                 error=ErrorObject(
                     code=exc.status_code, message=exc.message, type=exc.type
                 )
-            ).model_dump(),
+            ).model_dump(mode="json"),
         )
 
     @app.exception_handler(RequestValidationError)
@@ -29,7 +29,7 @@ def register_exception_handlers(app: FastAPI):
                 error=ErrorObject(
                     code=422, message="Validation Failed", type="ValidationError"
                 )
-            ).model_dump(),
+            ).model_dump(mode="json"),
         )
 
     @app.exception_handler(Exception)
@@ -40,5 +40,5 @@ def register_exception_handlers(app: FastAPI):
                 error=ErrorObject(
                     code=500, message="Internal Server Error", type="ServerError"
                 )
-            ).model_dump(),
+            ).model_dump(mode="json"),
         )

@@ -31,7 +31,7 @@ def google_login(data: LoginRequest):
     response = JSONResponse(
         content=SuccessResponse(
             data=LoginResponse(access_token=access_token, user=user)
-        ).model_dump()
+        ).model_dump(mode="json")
     )
 
     response.set_cookie(
@@ -70,7 +70,7 @@ def refresh_token(refresh_token: str = Cookie(None)):
         response = JSONResponse(
             content=SuccessResponse(
                 data=LoginResponse(access_token=new_access_token, user=user)
-            ).model_dump()
+            ).model_dump(mode="json")
         )
 
         response.set_cookie(
